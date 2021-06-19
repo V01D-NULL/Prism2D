@@ -1,0 +1,9 @@
+[submodule "Engine/src/external/imgui"]
+	path = Engine/src/external/imgui
+	url = https://github.com/V01D-NULL/imgui.git
+[submodule "Engine/src/external/loguru"]
+	path = Engine/src/external/loguru
+	url = https://github.com/emilk/loguru.git
+[submodule "Engine/src/external/config-parser"]
+	path = Engine/src/external/config-parser
+	url = https://github.com/vermagav/config-parser.git
