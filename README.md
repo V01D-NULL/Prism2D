@@ -17,6 +17,9 @@ That project was an absolute mess, now I have a decent plan of what I wish to us
 mkdir build && cd build
 cmake -G Ninja ../
 ninja
+cp ../api/prism2d . # Python api
+cp ../api/example.py . # Python script to test the api
+./Prism2D example
 ```
 
 - Depends on (apt package manager names):
