@@ -1,4 +1,5 @@
 from ctypes import POINTER, c_char, c_char_p, c_wchar_p, cdll, create_string_buffer
+import os
 
 class Library:
     def __init__(self) -> None:
