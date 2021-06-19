@@ -23,6 +23,16 @@ cp ../api/example.py . # Python script to test the api
 ./Prism2D example # Note the absence of the .py extension (This is caught and logged as an error by the engine aswell)
 ```
 
+## Screenshots
+### Engine logging
+<img src="screenshots/EngineLog.png"></img>
+### Engine logging error
+<img src="screenshots/EngineLogError.png"></img>
+### Engine
+<img src="screenshots/Engine.png"></img>
+
+(The background color above was set using the python api for the game engine. The source can be found in api/) Pretty cool, huh? :-)
+
 - Depends on (apt package manager names):
     - allegro5, cmake, ninja, pybind11-dev
 
