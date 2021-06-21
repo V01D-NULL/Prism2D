@@ -156,6 +156,12 @@ namespace Prism
 
     void Engine::registerNewScript(std::string name)
     {
+        /* Check if there is a .py extension and remove if it that is the case */
+        if (OS::FileSystem().python_script_has_extension(name.c_str()))
+        {
+            size_t found = name.find(".py");
+            name.erase(found);
+        }
         this->python_scripts.push_back(name);
     }
 

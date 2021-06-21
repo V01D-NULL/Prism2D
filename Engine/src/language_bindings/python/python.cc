@@ -70,7 +70,7 @@ namespace lang
     /* Call pythons function LateUpdate. Runs once per frame */
     void Python::DefLateUpdate(const char *file)
     {
-        if ( OS::FileSystem().python_script_has_extension(file))
+        if (OS::FileSystem().python_script_has_extension(file))
         {
             throw("File passed to engine must not contain a .py extension");
         }
