@@ -24,6 +24,7 @@ set(LD_LIBS
     -lallegro
     -lallegro_main
     -lallegro_primitives
+    -lallegro_image
     -lpthread
     -ldl
     -lpython3.9
@@ -38,6 +39,7 @@ ADD_LIBRARY(PrismEngine
     Engine/src/logging/log.cc
     Engine/src/renderer/primitives/shape.cc
     Engine/src/renderer/clear_color.cc
+    Engine/src/renderer/textures/texture.cc
     Engine/src/UI/ui.cc
     Engine/src/threading/thread.cc
     Engine/src/language_bindings/python/python.cc

@@ -8,6 +8,7 @@
 #include "OS/os.h"
 #include "renderer/clear_color.h"
 #include <thread>
+#include "renderer/textures/texture.h"
 
 namespace Prism
 {
@@ -84,11 +85,13 @@ namespace Prism
                 ImGui::Render();
 
                 ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+
                 al_flip_display();
             }
         }
     }
 
+    #pragma region Python
     //Call pythons Enter function
     void Engine::Enter()
     {
@@ -168,7 +171,8 @@ namespace Prism
             Log().warn("Could not unregister script :: The script %s was not found", name.c_str());
         }
     }
-
+    #pragma endregion
+    
     void Engine::read_config_file(const char *file)
     {
         // Log().info("Loading ini file");

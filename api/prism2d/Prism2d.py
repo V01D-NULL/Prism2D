@@ -17,5 +17,10 @@ class Renderer:
     def __init__(self) -> None:
         pass
 
+    # TODO: Add a clear function that takes an image as an argument to draw a background
     def clear(r, g, b):
         return engine_handle.Python_clear_color(r, g, b)
+
+    def render_texture(filename, x, y):
+        filename = bytes(filename.encode())
+        return engine_handle.Python_render_texture(filename, x, y)

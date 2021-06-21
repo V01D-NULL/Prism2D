@@ -3,7 +3,7 @@
 #include <string>
 #include "../src/OS/os.h"
 #include "../src/UI/ui.h"
-#include <allegro5/allegro_native_dialog.h>
+#include "../src/renderer/textures/texture.h"
 
 void SandboxApp::Start(int argc, char **argv)
 {
