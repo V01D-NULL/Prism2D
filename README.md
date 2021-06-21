@@ -34,7 +34,7 @@ cp ../api/example.py . # Python script to test the api
 (The background color above was set using the python api for the game engine. The source can be found in api/) Pretty cool, huh? :-)
 
 - Depends on (apt package manager names):
-    - allegro5, cmake, ninja, pybind11-dev
+    - allegro5, cmake, ninja
 
 - Depends on (submodule):
     - loguru (Logging)
