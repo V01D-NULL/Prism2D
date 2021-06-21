@@ -31,7 +31,7 @@ cp ../api/example.py . # Python script to test the api
 ### Engine
 <img src="screenshots/Engine.png"></img>
 
-(The background color above was set using the python api for the game engine. The source can be found in api/) Pretty cool, huh? :-)
+(The background color and image above were rendered using the python api for the game engine. The source can be found in api/) Pretty cool, huh? :-)
 
 - Depends on (apt package manager names):
     - allegro5, cmake, ninja
