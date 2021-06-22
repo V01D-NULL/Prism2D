@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include "../logging/log.h"
 #include <SDL2/SDL.h>
+#include "../misc/getter_setter.h"
 
 UI::UI()
 {
@@ -17,9 +18,31 @@ UI::UI()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    //TODO: Read config file and set imgui color
     ImGui::StyleColorsDark();
+    // ImGui::StyleColorsClassic();
+    // ImGui::StyleColorsLight();
 
-    // ImGui_ImplSDL2_InitForOpenGL()
-
+    ImGui_ImplSDL2_InitForOpenGL(PrismGlobal::window_get(), PrismGlobal::glContext_get());
+    ImGui_ImplOpenGL3_Init(glsl_version);
 }
 
+void UI::Update()
+{
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(PrismGlobal::window_get());
+    ImGui::NewFrame();
+}
+
+void UI::Destroy()
+{
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+}
+
+void UI::Render()
+{
+    ImGui::Render();
+}

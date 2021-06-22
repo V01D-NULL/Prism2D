@@ -1,4 +1,6 @@
 #include "getter_setter.h"
+#include "../external/imgui/backends/imgui_impl_sdl.h"
+#include "../external/imgui/backends/imgui_impl_opengl3.h"
 
 namespace PrismGlobal
 {

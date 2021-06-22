@@ -2,6 +2,7 @@
 #include "../../../logging/log.h"
 #include "renderer/module_texture.h"
 #include "logging/module_log.h"
+#include <GL/glew.h>
 
 /* Exportable python functions */
 extern "C"
@@ -11,9 +12,14 @@ extern "C"
 		return cpp_log(msg);
 	}
 
-	void Python_clear_color(int r, int g, int b)
+	void Python_clear_color(float r, float g, float b)
 	{
-		// return al_clear_to_color(al_map_rgb(r, g, b));
+		return glClearColor(r, g, b, 1);
+	}
+
+	void Python_clear_color_alpha(float r, float g, float b, float a)
+	{
+		return glClearColor(r, g, b, a);
 	}
 
 	void Python_render_texture(char *filename, int x, int y)

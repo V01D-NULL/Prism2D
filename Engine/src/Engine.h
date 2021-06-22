@@ -4,6 +4,17 @@
 #include <string>
 #include <vector>
 #include "UI/ui.h"
+#include "logging/log.h"
+#include "language_bindings/python/python.h"
+#include <algorithm>
+#include "external/config-parser/config/handler.h"
+#include "external/imgui/backends/imgui_impl_sdl.h"
+#include "OS/os.h"
+#include "renderer/clear_color.h"
+#include <thread>
+#include "renderer/textures/texture.h"
+#include "OpenGL/ext/initGL.h"
+#include "misc/getter_setter.h"
 
 namespace Prism
 {
@@ -36,6 +47,7 @@ namespace Prism
             UI *ui;
 
         private:
+            OS::display_t display_info;
             SDL_Event event;
     };
 }

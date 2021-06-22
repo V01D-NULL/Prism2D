@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED 17)
 set(EXTERNAL_SRCS
     Engine/src/external/loguru/loguru.cpp
     Engine/src/external/imgui/backends/imgui_impl_sdl.cpp
+    Engine/src/external/imgui/backends/imgui_impl_opengl3.cpp
     Engine/src/external/imgui/imgui_demo.cpp
     Engine/src/external/imgui/imgui_draw.cpp
     Engine/src/external/imgui/imgui_tables.cpp

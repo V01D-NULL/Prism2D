@@ -1,15 +1,4 @@
 #include "Engine.h"
-#include "logging/log.h"
-#include "language_bindings/python/python.h"
-#include <algorithm>
-#include "external/config-parser/config/handler.h"
-#include "external/imgui/backends/imgui_impl_sdl.h"
-#include "OS/os.h"
-#include "renderer/clear_color.h"
-#include <thread>
-#include "renderer/textures/texture.h"
-#include "OpenGL/ext/initGL.h"
-#include "misc/getter_setter.h"
 
 namespace Prism
 {
@@ -24,8 +13,8 @@ namespace Prism
         }
         
         /* Setup a display */
-        OS::display_t disp = OS::Display().get_display_info(MAIN_MONITOR);
-        Log().info("Display size (%d,%d)\n", disp.width, disp.height);
+        this->display_info = OS::Display().get_display_info(MAIN_MONITOR);
+        Log().info("Display size (%d,%d)\n", this->display_info.width, this->display_info.height);
 
         /* Window */
         PrismGlobal::window_set
@@ -35,8 +24,8 @@ namespace Prism
                 "⧋ Prism2D ⧋",
                 SDL_WINDOWPOS_CENTERED,
                 SDL_WINDOWPOS_CENTERED,
-                disp.width,
-                disp.height,
+                this->display_info.width,
+                this->display_info.height,
                 SDL_WINDOW_OPENGL
             )
         );
@@ -118,14 +107,26 @@ namespace Prism
             }
         }
         
+        /* Ensure the functions below are limited to a constant framerate */
         if ((this->delta = (SDL_GetTicks() - elapsedTimeSinceLastFrame)) < this->required_delta_time)
         {
             SDL_Delay(this->required_delta_time - this->delta);
         }
+        
+        this->ui->Update();
         this->Update();
         this->LateUpdate();
         this->Render();
-        SDL_UpdateWindowSurface(PrismGlobal::window_get());
+
+        static bool demo = true;        
+        ImGui::ShowDemoWindow(&demo);
+        this->ui->Render();
+        glViewport(0, 0, this->display_info.width, this->display_info.height);
+        
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        SDL_GL_SwapWindow(PrismGlobal::window_get());
+        // SDL_UpdateWindowSurface(PrismGlobal::window_get());
         // SDL_GL_SwapWindow(this->window);
     }
 
@@ -251,6 +252,8 @@ namespace Prism
 
     void Engine::shutdown()
     {
+        this->ui->Destroy();
+        SDL_GL_DeleteContext(PrismGlobal::glContext_get());
         SDL_DestroyWindow(PrismGlobal::window_get());
         SDL_Quit();
         Py_Finalize();
