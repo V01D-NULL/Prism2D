@@ -28,16 +28,20 @@ namespace Prism
         Log().info("Display size (%d,%d)\n", disp.width, disp.height);
 
         /* Window */
-        this->window = SDL_CreateWindow(
-            "⧋ Prism2D ⧋",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
-            disp.width,
-            disp.height,
-            0
+        PrismGlobal::window_set
+        (
+            SDL_CreateWindow
+            (
+                "⧋ Prism2D ⧋",
+                SDL_WINDOWPOS_CENTERED,
+                SDL_WINDOWPOS_CENTERED,
+                disp.width,
+                disp.height,
+                SDL_WINDOW_OPENGL
+            )
         );
-
-        if (this->window == nullptr)
+        
+        if (PrismGlobal::window_get() == nullptr)
         {
             Log().error("Could not create a window, Reason: %s\n", SDL_GetError());
             Log().fatal(""); //Quit
@@ -48,7 +52,7 @@ namespace Prism
         (
             SDL_GetWindowSurface
             (
-                this->window
+                PrismGlobal::window_get()
             )
         );
 
@@ -58,10 +62,31 @@ namespace Prism
             Log().fatal(""); //Quit
         }
 
+        /* OpenGL context + glew */
+        GL().init();
+        
+        PrismGlobal::glContext_set
+        (
+            SDL_GL_CreateContext
+            (
+                PrismGlobal::window_get()
+            )
+        );
+
+        if (PrismGlobal::glContext_get() == nullptr)
+        {
+            Log().error("Could not create an OpenGL context, Reason: %s\n", SDL_GetError());
+            Log().fatal(""); //Quit
+        }
+        
+        SDL_GL_MakeCurrent(PrismGlobal::window_get(), PrismGlobal::glContext_get());
+        SDL_GL_SetSwapInterval(PRISM_GL_VSYNC_UPDATE);
+        GL().init_glew();
         Log().info("Initialized SDL2");
 
-        /* 3D support (This is a thing for the future, don't bother looking for 3D functionality right now) */
-        // GL().init();
+        /* Prepare ImGui UI */
+        UI *_ui = new UI();
+        this->ui = _ui;
 
         Py_Initialize();
     }
@@ -100,7 +125,8 @@ namespace Prism
         this->Update();
         this->LateUpdate();
         this->Render();
-        SDL_UpdateWindowSurface(this->window);
+        SDL_UpdateWindowSurface(PrismGlobal::window_get());
+        // SDL_GL_SwapWindow(this->window);
     }
 
 #pragma region Python
@@ -225,7 +251,7 @@ namespace Prism
 
     void Engine::shutdown()
     {
-        SDL_DestroyWindow(this->window);
+        SDL_DestroyWindow(PrismGlobal::window_get());
         SDL_Quit();
         Py_Finalize();
     }

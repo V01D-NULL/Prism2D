@@ -26,6 +26,7 @@ set(LD_LIBS
     -lstdc++fs
     -lGL
     -lGLU
+    -lGLEW
 )
 
 ADD_LIBRARY(PrismEngine
