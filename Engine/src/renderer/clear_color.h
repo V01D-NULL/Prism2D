@@ -1,13 +1,11 @@
 #pragma once
 
-#include <allegro5/allegro5.h>
-
+//TODO: Fix me
 namespace renderer
 {
     class ClearColor
     {
-    public:
-        void clear(ALLEGRO_COLOR color);
-        void clear(int r, int g, int b);
+        public:
+            void clear(int r, int g, int b);
     };
 }

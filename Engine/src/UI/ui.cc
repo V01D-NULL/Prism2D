@@ -1,11 +1,10 @@
 #include "ui.h"
 
-UI::UI(ALLEGRO_DISPLAY *display)
+UI::UI()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
-    ImGui_ImplAllegro5_Init(display);
 }
 

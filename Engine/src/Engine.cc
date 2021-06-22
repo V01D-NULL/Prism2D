@@ -1,97 +1,109 @@
 #include "Engine.h"
 #include "logging/log.h"
-#include <allegro5/allegro_native_dialog.h>
 #include "language_bindings/python/python.h"
 #include <algorithm>
 #include "external/config-parser/config/handler.h"
-#include "external/imgui/backends/imgui_impl_allegro5.h"
+#include "external/imgui/backends/imgui_impl_sdl.h"
 #include "OS/os.h"
 #include "renderer/clear_color.h"
 #include <thread>
 #include "renderer/textures/texture.h"
+#include "OpenGL/ext/initGL.h"
+#include "misc/getter_setter.h"
 
 namespace Prism
 {
-    Engine::Engine(int w, int h)
+    Engine::Engine()    
     {
-        Log().info("Initializing allegro5");
-        al_init();
-        al_install_keyboard();
-        al_install_mouse();
-        al_init_primitives_addon();
-        al_set_new_display_flags(ALLEGRO_RESIZABLE);
-        Log().info("Initialized allegro5");
-
+        /* Init */
+        Log().info("Initializing SDL2");
+        if (SDL_Init(SDL_INIT_VIDEO))
+        {
+            Log().error("Could not Initialize SDL2, Reason: %s\n", SDL_GetError());
+            Log().fatal(""); //Quit
+        }
+        
         /* Setup a display */
-        OS::display_t disp = OS::Display().get_display_info();
+        OS::display_t disp = OS::Display().get_display_info(MAIN_MONITOR);
         Log().info("Display size (%d,%d)\n", disp.width, disp.height);
-        this->display = al_create_display(disp.width, disp.height);
-        al_set_window_title(this->display, "⧋ Prism2D ⧋");
 
-        /* Setup the framerate */
-        this->fps = al_create_timer(1.0 / this->fps_val);
+        /* Window */
+        this->window = SDL_CreateWindow(
+            "⧋ Prism2D ⧋",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            disp.width,
+            disp.height,
+            0
+        );
 
-        /* Register events */
-        this->queue = al_create_event_queue();
-        this->RegisterEventSources();
+        if (this->window == nullptr)
+        {
+            Log().error("Could not create a window, Reason: %s\n", SDL_GetError());
+            Log().fatal(""); //Quit
+        }
 
-        /* Init UI */
-        UI _ui(this->display);
-        (*this->ui) = _ui;
+        /* Surface */
+        PrismGlobal::window_surface_set
+        (
+            SDL_GetWindowSurface
+            (
+                this->window
+            )
+        );
+
+        if (PrismGlobal::window_surface_get() == nullptr)
+        {
+            Log().error("Could not get the window surface, Reason: %s\n", SDL_GetError());
+            Log().fatal(""); //Quit
+        }
+
+        Log().info("Initialized SDL2");
+
+        /* 3D support (This is a thing for the future, don't bother looking for 3D functionality right now) */
+        // GL().init();
 
         Py_Initialize();
     }
 
-    void Engine::RegisterEventSources()
+    void Engine::SetFPS(int fps)
     {
-        al_register_event_source(this->queue, al_get_display_event_source(this->display));
-        al_register_event_source(this->queue, al_get_keyboard_event_source());
-        al_register_event_source(this->queue, al_get_timer_event_source(this->fps));
-        al_register_event_source(this->queue, al_get_mouse_event_source());
+        if (fps < 30 || fps > 80)
+        {
+            Log().warn("FPS should not be greater than 80 or less than 30. Tried to set FPS = %d", fps);
+        }
+        this->fps_val = fps;
+        this->required_delta_time = 1000 / this->fps_val;
     }
 
     void Engine::PollEvents()
     {
-        ALLEGRO_EVENT ev;
-        bool redraw = false;
-
-        while (al_get_next_event(this->queue, &ev))
+        int elapsedTimeSinceLastFrame = SDL_GetTicks();
+        while (SDL_PollEvent(&(this->event)))
         {
-            ImGui_ImplAllegro5_ProcessEvent(&ev);
-            if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            switch (this->event.type)
             {
-                this->shutdown();
-                exit(0);
-            }
-
-            else if (ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE)
-            {
-                ImGui_ImplAllegro5_InvalidateDeviceObjects();
-                al_acknowledge_resize(this->display);
-                ImGui_ImplAllegro5_CreateDeviceObjects();
-            }
-
-            //This code runs once every frame
-            else if (ev.type == ALLEGRO_EVENT_TIMER && al_is_event_queue_empty(this->queue))
-            {
-                this->Update();
-                this->LateUpdate();
-                this->Render();
-
-                bool show_demo = true;
-                ImGui_ImplAllegro5_NewFrame();
-                ImGui::NewFrame();
-                ImGui::ShowDemoWindow(&show_demo);
-                ImGui::Render();
-
-                ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
-
-                al_flip_display();
+                case SDL_QUIT:
+                    this->shutdown();
+                    exit(0);
+                    break;
+                
+                default:
+                    break;
             }
         }
+        
+        if ((this->delta = (SDL_GetTicks() - elapsedTimeSinceLastFrame)) < this->required_delta_time)
+        {
+            SDL_Delay(this->required_delta_time - this->delta);
+        }
+        this->Update();
+        this->LateUpdate();
+        this->Render();
+        SDL_UpdateWindowSurface(this->window);
     }
 
-    #pragma region Python
+#pragma region Python
     //Call pythons Enter function
     void Engine::Enter()
     {
@@ -111,7 +123,7 @@ namespace Prism
                 Log().error("An unknown exception occured in `lang::Python().DefEnter(%s)` -> %s", this->python_scripts.at(i).c_str(), e.what());
             }
         }
-        al_start_timer(this->fps);
+        // al_start_timer(this->fps);
     }
 
     void Engine::Update()
@@ -177,19 +189,8 @@ namespace Prism
             Log().warn("Could not unregister script :: The script %s was not found", name.c_str());
         }
     }
-    #pragma endregion
-    
-    void Engine::read_config_file(const char *file)
-    {
-        // Log().info("Loading ini file");
-        // config::Handler handler;
-        // handler.Load(file, {"scripts"});
 
-        // config::Item *setting;
-        // setting = handler.Get("scripts.path");   
-    }
-
-    void Engine::Render()
+        void Engine::Render()
     {
         /* Execute the renderCycle function in each python script registered */
         for (int i = 0; i < this->python_scripts.size(); i++)
@@ -209,13 +210,23 @@ namespace Prism
         }
     }
 
+
+#pragma endregion
+
+    void Engine::read_config_file(const char *file)
+    {
+        // Log().info("Loading ini file");
+        // config::Handler handler;
+        // handler.Load(file, {"scripts"});
+
+        // config::Item *setting;
+        // setting = handler.Get("scripts.path");
+    }
+
     void Engine::shutdown()
     {
-        ImGui_ImplAllegro5_Shutdown();
-        al_destroy_display(this->display);
-        al_destroy_timer(this->fps);
-        al_uninstall_keyboard();
-        al_uninstall_mouse();
+        SDL_DestroyWindow(this->window);
+        SDL_Quit();
         Py_Finalize();
     }
 }

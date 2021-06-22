@@ -2,13 +2,13 @@ project (Prism2D)
 cmake_minimum_required(VERSION 3.0)
 
 # It is assumed that Prism2D is built inside of a build/ folder, hence the ../ prefix on the include paths
-set(CMAKE_CXX_FLAGS "-fconcepts -I /usr/include/python3.9/ -I ../Engine/src/external/imgui")
+set(CMAKE_CXX_FLAGS "-fconcepts -I /usr/include/python3.9/ -I ../Engine/src/external/imgui -I /usr/include/SDL2/")
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
 set(EXTERNAL_SRCS
     Engine/src/external/loguru/loguru.cpp
-    Engine/src/external/imgui/backends/imgui_impl_allegro5.cpp
+    Engine/src/external/imgui/backends/imgui_impl_sdl.cpp
     Engine/src/external/imgui/imgui_demo.cpp
     Engine/src/external/imgui/imgui_draw.cpp
     Engine/src/external/imgui/imgui_tables.cpp
@@ -21,15 +21,11 @@ set(EXTERNAL_SRCS
 )
 
 set(LD_LIBS
-    -lallegro
-    -lallegro_main
-    -lallegro_primitives
-    -lallegro_image
-    -lpthread
-    -ldl
+    -lSDL2
     -lpython3.9
     -lstdc++fs
-    -lallegro_dialog
+    -lGL
+    -lGLU
 )
 
 ADD_LIBRARY(PrismEngine
@@ -43,7 +39,9 @@ ADD_LIBRARY(PrismEngine
     Engine/src/UI/ui.cc
     Engine/src/threading/thread.cc
     Engine/src/language_bindings/python/python.cc
+    Engine/src/misc/getter_setter.cc
     Engine/src/language_bindings/python/api/modules.cc
+    Engine/src/OpenGL/ext/initGL.cc
     Engine/src/OS/os.cc
     ${EXTERNAL_SRCS}
 )

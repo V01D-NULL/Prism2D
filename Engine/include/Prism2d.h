@@ -8,3 +8,5 @@
 #include "../src/language_bindings/python/python.h"   //Python language binding for Prism2D
 #include "../SandboxApp/Sandbox.hpp"                  //Sandbox
 #include "../src/OS/os.h"                             //OS specific functions
+#include "../src/UI/ui.h"
+#include "../src/renderer/textures/texture.h"

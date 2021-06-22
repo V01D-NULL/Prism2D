@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <SDL2/SDL.h>
+
+#define MAIN_MONITOR 0
 
 namespace OS
 {
@@ -25,11 +28,12 @@ namespace OS
     {
         int width;
         int height;
+        int refresh_rate;
     }
     display_t;
     class Display
     {
         public:
-            display_t get_display_info(); //Get display information
+            display_t get_display_info(int display_indx); //Get display information
     };
 }

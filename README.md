@@ -20,7 +20,7 @@ cmake -G Ninja ../
 ninja
 cp -r ../api/prism2d . # Python api
 cp ../api/example.py . # Python script to test the api
-./Prism2D example # Note the absence of the .py extension (This is caught and logged as an error by the engine aswell)
+./Prism2D example.py
 ```
 
 ## Screenshots
@@ -34,7 +34,7 @@ cp ../api/example.py . # Python script to test the api
 (The background color and image above were rendered using the python api for the game engine. The source can be found in api/) Pretty cool, huh? :-)
 
 - Depends on (apt package manager names):
-    - allegro5, cmake, ninja
+    - libsdl2-dev, cmake, ninja
 
 - Depends on (submodule):
     - loguru (Logging)

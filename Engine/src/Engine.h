@@ -1,7 +1,6 @@
 #pragma once
 
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_primitives.h>
+#include <SDL2/SDL.h>
 #include <string>
 #include <vector>
 #include "UI/ui.h"
@@ -11,12 +10,13 @@ namespace Prism
     class Engine
     {
         public:
-            Engine(int w=1280, int h=720);
+            Engine();
 
         public:
             void read_config_file(const char *file);
             void registerNewScript(std::string name);
             void UnregisterScript(std::string name);
+            void SetFPS(int fps);
             void PollEvents();
             void LateUpdate();
             void Update();
@@ -30,12 +30,13 @@ namespace Prism
         private:
             std::vector<std::string> python_scripts;
             std::string script_path;
-            double fps_val = 60.0;
+            int fps_val = 60;
+            int required_delta_time = 1000 / fps_val;
+            int delta; //Used for fps control
             UI *ui;
 
         private:
-            ALLEGRO_DISPLAY *display;
-            ALLEGRO_EVENT_QUEUE *queue;
-            ALLEGRO_TIMER *fps;
+            SDL_Window *window = nullptr;
+            SDL_Event event;
     };
 }

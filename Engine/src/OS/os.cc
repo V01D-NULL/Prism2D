@@ -1,7 +1,6 @@
 #include "os.h"
 #include <experimental/filesystem>
 #include <cstring>
-#include <allegro5/allegro5.h>
 
 namespace OS
 {
@@ -55,15 +54,16 @@ namespace OS
     /* Filesystem end */
 
     /* Display start */
-    display_t Display::get_display_info()
+    display_t Display::get_display_info(int display_indx)
     {
         display_t display_info;
 
-        ALLEGRO_MONITOR_INFO info;
-        al_get_monitor_info(0, &info); 
+        SDL_DisplayMode display_mode;
+        SDL_GetCurrentDisplayMode(display_indx, &display_mode);
         
-        display_info.width = info.x2 - info.x1;
-        display_info.height = info.y2 - info.y1;
+        display_info.width = display_mode.w;
+        display_info.height = display_mode.h;
+        display_info.refresh_rate = display_mode.refresh_rate;
 
         return display_info;
     }

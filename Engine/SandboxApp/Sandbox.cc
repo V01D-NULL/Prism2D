@@ -1,9 +1,5 @@
 #include "Sandbox.hpp"
-#include <allegro5/allegro5.h>
 #include <string>
-#include "../src/OS/os.h"
-#include "../src/UI/ui.h"
-#include "../src/renderer/textures/texture.h"
 
 void SandboxApp::Start(int argc, char **argv)
 {

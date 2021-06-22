@@ -15,4 +15,4 @@ def LateUpdate():
 # Called once per frame, use only for rendering (Renderer.clear *must* be called first otherwise it will draw over your textures)
 def RenderCycle():
         Renderer.clear(102, 153, 255) #Cornflower blue
-        Renderer.render_texture("../res/epic.png", 100, 100)
+        Renderer.render_texture("../res/epic.bmp", 100, 100)
