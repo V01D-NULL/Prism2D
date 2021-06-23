@@ -44,6 +44,7 @@ ADD_LIBRARY(PrismEngine
     Engine/src/misc/getter_setter.cc
     Engine/src/language_bindings/python/api/modules.cc
     Engine/src/OpenGL/ext/initGL.cc
+    Engine/src/OpenGL/renderer/fbo.cc
     Engine/src/OS/os.cc
     ${EXTERNAL_SRCS}
 )

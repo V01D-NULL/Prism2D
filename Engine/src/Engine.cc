@@ -26,7 +26,7 @@ namespace Prism
                 SDL_WINDOWPOS_CENTERED,
                 this->display_info.width,
                 this->display_info.height,
-                SDL_WINDOW_OPENGL
+                SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
             )
         );
         
@@ -77,6 +77,9 @@ namespace Prism
         UI *_ui = new UI();
         this->ui = _ui;
 
+        GLrenderer::GL_FBO *_prism_gl_fbo = new GLrenderer::GL_FBO();
+        this->prism_gl_fbo = _prism_gl_fbo;
+
         Py_Initialize();
     }
 
@@ -114,12 +117,29 @@ namespace Prism
         }
         
         this->ui->Update();
-        this->Update();
-        this->LateUpdate();
-        this->Render();
+        
+        /* Write data to custom FBO */
+        this->prism_gl_fbo->bindFBO();
+        // glClearColor(.4f, .4f, .4f, 1.0f); //This still renders to the main framebuffer object?
+        // this->Update();
+        // this->LateUpdate();
+        // this->Render();
+        // glClearColor(1.0, 1.0, 1.0, 1.0);
 
-        ImGui::Begin("Viewport");
+        /* Render ImGui to default FBO (window) */
+        this->prism_gl_fbo->unbindFBO();
 
+        ImGui::Begin("Game Scene");
+        {
+            // Using a Child allow to fill all the space of the window.
+            // It also allows customization
+            ImGui::BeginChild("Game");
+            // Get the size of the child (i.e. the whole draw size of the windows).
+            ImVec2 wsize = ImGui::GetWindowSize();
+            // Because I use the texture from OpenGL, I need to invert the V from the UV.
+            ImGui::Image((ImTextureID)this->prism_gl_fbo->getTex(), wsize, ImVec2(0, 1), ImVec2(1, 0));
+            ImGui::EndChild();
+        }
         ImGui::End();
         
         this->ui->Render();
@@ -258,6 +278,7 @@ namespace Prism
 
     void Engine::shutdown()
     {
+        this->prism_gl_fbo->Destroy();
         this->ui->Destroy();
         SDL_GL_DeleteContext(PrismGlobal::glContext_get());
         SDL_DestroyWindow(PrismGlobal::window_get());

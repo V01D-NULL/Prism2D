@@ -33,9 +33,11 @@ UI::UI()
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
-
+    
     ImGui_ImplSDL2_InitForOpenGL(PrismGlobal::window_get(), PrismGlobal::glContext_get());
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    Log().info("Setup ImGui");
 }
 
 void UI::Update()

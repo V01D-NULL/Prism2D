@@ -15,6 +15,7 @@
 #include "renderer/textures/texture.h"
 #include "OpenGL/ext/initGL.h"
 #include "misc/getter_setter.h"
+#include "OpenGL/renderer/fbo.h"
 
 namespace Prism
 {
@@ -45,9 +46,11 @@ namespace Prism
             int required_delta_time = 1000 / fps_val;
             int delta; //Used for fps control
             UI *ui;
-
-        private:
             OS::display_t display_info;
+            GLrenderer::GL_FBO *prism_gl_fbo; //FrameBufferObject class
+            
+        //3rd party vars
+        private:
             SDL_Event event;
     };
 }
