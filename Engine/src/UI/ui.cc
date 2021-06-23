@@ -3,6 +3,7 @@
 #include "../logging/log.h"
 #include <SDL2/SDL.h>
 #include "../misc/getter_setter.h"
+#include "../logging/log.h"
 
 UI::UI()
 {
@@ -17,12 +18,21 @@ UI::UI()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO &io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
     //TODO: Read config file and set imgui color
     ImGui::StyleColorsDark();
     // ImGui::StyleColorsClassic();
     // ImGui::StyleColorsLight();
+    
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
 
     ImGui_ImplSDL2_InitForOpenGL(PrismGlobal::window_get(), PrismGlobal::glContext_get());
     ImGui_ImplOpenGL3_Init(glsl_version);
@@ -45,4 +55,17 @@ void UI::Destroy()
 void UI::Render()
 {
     ImGui::Render();
+}
+
+void UI::ViewportRender()
+{
+    ImGuiIO &io = ImGui::GetIO();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+    }
 }

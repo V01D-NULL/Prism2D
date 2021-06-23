@@ -118,13 +118,19 @@ namespace Prism
         this->LateUpdate();
         this->Render();
 
-        static bool demo = true;        
-        ImGui::ShowDemoWindow(&demo);
+        ImGui::Begin("Viewport");
+
+        ImGui::End();
+        
         this->ui->Render();
+
         glViewport(0, 0, this->display_info.width, this->display_info.height);
         
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        this->ui->ViewportRender();
+
         SDL_GL_SwapWindow(PrismGlobal::window_get());
         // SDL_UpdateWindowSurface(PrismGlobal::window_get());
         // SDL_GL_SwapWindow(this->window);
