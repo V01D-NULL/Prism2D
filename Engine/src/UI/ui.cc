@@ -18,7 +18,7 @@ UI::UI()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
@@ -59,7 +59,7 @@ void UI::Render()
 
 void UI::ViewportRender()
 {
-    ImGuiIO &io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
