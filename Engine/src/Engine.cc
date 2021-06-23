@@ -120,12 +120,11 @@ namespace Prism
         
         /* Write data to custom FBO */
         this->prism_gl_fbo->bindFBO();
-        // glClearColor(.4f, .4f, .4f, 1.0f); //This still renders to the main framebuffer object?
+        glClearColor(.4f, .4f, .6f, 1.0f); //This still renders to the main framebuffer object?
         // this->Update();
         // this->LateUpdate();
         // this->Render();
-        // glClearColor(1.0, 1.0, 1.0, 1.0);
-
+        
         /* Render ImGui to default FBO (window) */
         this->prism_gl_fbo->unbindFBO();
 
@@ -160,7 +159,6 @@ namespace Prism
     //Call pythons Enter function
     void Engine::Enter()
     {
-
         for (int i = 0; i < this->python_scripts.size(); i++)
         {
             try

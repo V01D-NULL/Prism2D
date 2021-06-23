@@ -15,32 +15,28 @@ namespace GLrenderer
         int tried = 0;
 
         glGenFramebuffers(1, &(this->fbo));
+        
         this->genTexture();
-        while (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+        else
         {
-            if (tried > 4)
-            {
-                goto fail;
-            }
-            Log().error("Could not generate FBO | Retrying.. (Attempt no. %d)", tried);
-            tried++;
+            Log().warn("could not generate fbo");
         }
         
         this->was_fbo_generated = true;
-        return;
-        fail:
-            Log().error("Tried to generate a FBO %d times which all failed", retries);
-            Log().fatal("");
     }
 
     void GL_FBO::genTexture()
     {
         glGenTextures(1, &(this->texture));
         glBindTexture(GL_TEXTURE_2D, this->texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 400, 200, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->texture, 0); 
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // attach it to currently bound framebuffer object
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->texture, 0);
     }
 
     void GL_FBO::bindFBO()
