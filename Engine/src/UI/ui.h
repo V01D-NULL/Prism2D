@@ -12,4 +12,5 @@ class UI
         void Update(); //Called once per frame
         void Destroy();
         void Render();
+        void ViewportRender();
 };
