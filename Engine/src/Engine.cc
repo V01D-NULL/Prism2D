@@ -88,6 +88,7 @@ namespace Prism
         if (fps < 30 || fps > 80)
         {
             Log().warn("FPS should not be greater than 80 or less than 30. Tried to set FPS = %d", fps);
+            return;
         }
         this->fps_val = fps;
         this->required_delta_time = 1000 / this->fps_val;
