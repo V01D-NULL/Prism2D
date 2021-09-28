@@ -34,7 +34,7 @@ cp ../api/example.py . # Python script to test the api
 (The background color and image above were rendered using the python api for the game engine. The source can be found in api/) Pretty cool, huh? :-)
 
 - Depends on (apt package manager names):
-    - libsdl2-dev, cmake, ninja
+    - libsdl2-dev, cmake, ninja, python3.9-dev
 
 - Depends on (submodule):
     - loguru (Logging)
